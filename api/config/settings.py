@@ -11,9 +11,15 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from os import getenv, path
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+APPS_DIR = path.join(BASE_DIR, 'core_apps')
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -30,14 +36,34 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites'
 ]
+
+THIRD_PARTY_APPS = [
+    'rest_framework',
+    'django_countries',
+    # 'corsheaders',
+    'phonenumber_field',
+    'drf_yasg',
+    'djoser',
+    'social_django',
+    'taggit',
+    'django_filters',
+    'djcelery_email',
+    'cloudinary',
+    'django_celery_beat'
+]
+
+LOCAL_APPS = []
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,7 +80,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [str(path.join(APPS_DIR, 'templates'))],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,6 +106,14 @@ DATABASES = {
     }
 }
 
+
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.ScryptPasswordHasher',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -111,13 +145,44 @@ USE_I18N = True
 
 USE_TZ = True
 
+SITE_ID = 1
+
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = path.join(BASE_DIR, 'staticfiles')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+TAGGIT_CASE_INSENSITIVE = True
+
+
+EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+
+# DEFAULT_FROM_EMAIL = 'banalasriram7@gmail.com'
+# EMAIL_USE_TLS = True
+# DOMAIN = 'gmail.com '
+
+EMAIL_PORT = 1025
+EMAIL_HOST='mailpit'
+DEFAULT_FROM_EMAIL = 'banalasriram7@gmail.com'
+CELERY_FLOWER_USER='admin' 
+CELERY_FLOWER_PASSWORD='Sriram@123'
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+POSTGRES_HOST = 'postgres'
+POSTGRES_PORT = 5432
+POSTGRES_DB = 'estate'
+POSTGRES_USER = 'srirambanala'
+POSTGRES_PASSWORD = 'Sriram@123'
