@@ -62,7 +62,15 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = []
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS+ [
+    'users',
+    'common',
+    'profiles',
+    'posts',
+    'issues',
+    'ratings',
+]
+
 
 
 MIDDLEWARE = [
@@ -98,14 +106,30 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+POSTGRES_HOST = 'postgres'
+POSTGRES_PORT = 5432
+POSTGRES_DB = 'estate'
+POSTGRES_USER = 'srirambanala'
+POSTGRES_PASSWORD = 'Sriram@123'
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': POSTGRES_DB,
+        'USER': POSTGRES_USER,
+        'PASSWORD': POSTGRES_PASSWORD,
+        'HOST': POSTGRES_HOST,
+        'PORT': POSTGRES_PORT,
     }
 }
-
 
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.Argon2PasswordHasher',
@@ -181,8 +205,29 @@ CELERY_FLOWER_USER='admin'
 CELERY_FLOWER_PASSWORD='Sriram@123'
 CELERY_BROKER_URL = 'redis://redis:6379/0'
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
-POSTGRES_HOST = 'postgres'
-POSTGRES_PORT = 5432
-POSTGRES_DB = 'estate'
-POSTGRES_USER = 'srirambanala'
-POSTGRES_PASSWORD = 'Sriram@123'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {name} {asctime} {module} {process} {thread} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'formatter': 'verbose',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
